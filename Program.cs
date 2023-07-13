@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Generics3
 {
-    internal class EmployeeManagementApp
+    public class EmployeeManagementApp
     {
         private List<Employee> employees = new List<Employee>();
 
@@ -27,17 +27,6 @@ namespace Generics3
                 Console.WriteLine("Співробітник з таким email не знайдений.");
             }
         }
-        public Employee FindEmployeeByEmail(string email)
-        {
-            foreach (Employee employee in employees)
-            {
-                if (employee.Email == email)
-                {
-                    return employee;
-                }
-            }
-            return null;
-        }
         public void UpdateEmployee(string email, string newFullName, string newPosition, decimal newSalary)
         {
             Employee employee = FindEmployeeByEmail(email);
@@ -52,6 +41,43 @@ namespace Generics3
                 Console.WriteLine("Співробітник з таким email не знайдений.");
             }
         }
+        public List<Employee> SearchEmployees(string keyword)
+        {
+            List<Employee> searchResults = new List<Employee>();
+
+            foreach (Employee employee in employees)
+            {
+                if (employee.FullName.Contains(keyword) ||
+                    employee.Position.Contains(keyword) ||
+                    employee.Email.Contains(keyword))
+                {
+                    searchResults.Add(employee);
+                }
+            }
+
+            return searchResults;
+        }
+        public void SortEmployees(string sortBy)
+        {
+            switch (sortBy)
+            {
+                case "fullName":
+                    employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
+                    break;
+                case "position":
+                    employees.Sort((emp1, emp2) => emp1.Position.CompareTo(emp2.Position));
+                    break;
+                case "salary":
+                    employees.Sort((emp1, emp2) => emp1.Salary.CompareTo(emp2.Salary));
+                    break;
+                case "email":
+                    employees.Sort((emp1, emp2) => emp1.Email.CompareTo(emp2.Email));
+                    break;
+                default:
+                    Console.WriteLine("Невірний параметр сортування.");
+                    break;
+            }
+        }
         public void PrintEmployees()
         {
             Console.WriteLine("Список співробітників:");
@@ -63,6 +89,17 @@ namespace Generics3
                 Console.WriteLine("Email: {0}", employee.Email);
                 Console.WriteLine();
             }
+        }
+        private Employee FindEmployeeByEmail(string email)
+        {
+            foreach (Employee employee in employees)
+            {
+                if (employee.Email == email)
+                {
+                    return employee;
+                }
+            }
+            return null;
         }
     }
 
@@ -82,7 +119,7 @@ namespace Generics3
         }
     }
 
-    class Programn
+    class Programy
     {
         static void Main(string[] args)
         {
@@ -100,6 +137,17 @@ namespace Generics3
 
             app.RemoveEmployee("alex.johnson@example.com");
 
+            app.PrintEmployees();
+
+            List<Employee> searchResults = app.SearchEmployees("John");
+            Console.WriteLine("Результати пошуку за ключовим словом 'John':");
+            foreach (Employee employee in searchResults)
+            {
+                Console.WriteLine(employee.FullName);
+            }
+
+            app.SortEmployees("salary");
+            Console.WriteLine("Сортування за заробітною платою:");
             app.PrintEmployees();
         }
     }
